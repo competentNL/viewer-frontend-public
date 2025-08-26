@@ -1,10 +1,10 @@
-const url = `https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest`;
+const url = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
 const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases/';
-const config = window["viewer"];
+// const config = window["viewer"];
 
 async function init() {
 
-    let version = config['version'];
+    let version = '0.0.0';
     if (!version) {
         version = await getLatestReleaseVersion();
     }
@@ -13,9 +13,9 @@ async function init() {
         throw new Error("No Version Found, please contact maintainer");
     }
 
-    if (!config['backendUrl']) {
-        throw new Error("No Backend Url Found, please contact maintainer");
-    }
+    // if (!config['backendUrl']) {
+    //     throw new Error("No Backend Url Found, please contact maintainer");
+    // }
 
     injectAssets(version);
 }
