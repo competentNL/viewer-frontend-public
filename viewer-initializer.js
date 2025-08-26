@@ -1,10 +1,9 @@
 const url = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
-const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases/';
-// const config = window["viewer"];
+const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
+const backendUrl = document.currentScript.getAttribute('backend-url');
+let version = document.currentScript.getAttribute('version');
 
 async function init() {
-
-    let version = '0.0.0';
     if (!version) {
         version = await getLatestReleaseVersion();
     }
@@ -13,9 +12,9 @@ async function init() {
         throw new Error("No Version Found, please contact maintainer");
     }
 
-    // if (!config['backendUrl']) {
-    //     throw new Error("No Backend Url Found, please contact maintainer");
-    // }
+    if (!backendUrl) {
+        throw new Error("No Backend Url Found, please contact maintainer");
+    }
 
     injectAssets(version);
 }
@@ -43,14 +42,14 @@ function injectAssets(version) {
     document.head.appendChild(cssLink);
 
     const jsPolyScript = document.createElement('script');
-    jsPolyScript.src = `${baseUrl}/${version}/main.js`;
+    jsPolyScript.src = `${baseUrl}/${version}/polyfills.js`;
     jsPolyScript.defer = true;
     jsPolyScript.type = 'module';
     document.body.appendChild(jsPolyScript);
 
     // Inject JS
     const jsScript = document.createElement('script');
-    jsScript.src = `${baseUrl}/${version}/polyfills.js`;
+    jsScript.src = `${baseUrl}/${version}/main.js`;
     jsScript.defer = true;
     jsScript.type = 'module';
     document.body.appendChild(jsScript);
