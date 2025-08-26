@@ -1,26 +1,27 @@
 const url = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
 const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
-const backendUrl = document.currentScript.getAttribute('backend-url');
-let version = document.currentScript.getAttribute('version');
+const {version, backend_url} = Object.fromEntries(new URL(document.currentScript.src).searchParams);
 
-const currentScript = document.currentScript;
-const args = Object.fromEntries(new URL(document.currentScript.src).searchParams);
-console.log(currentScript, args);
+window.viewer = {
+    version,
+    backendUrl: backend_url
+}
 
 async function init() {
-    if (!version) {
-        version = await getLatestReleaseVersion();
+    let tempVersion = version;
+    if (!tempVersion) {
+        tempVersion = await getLatestReleaseVersion();
     }
 
-    if (!version) {
+    if (!tempVersion) {
         throw new Error("No Version Found, please contact maintainer");
     }
 
-    if (!backendUrl) {
+    if (!backend_url) {
         throw new Error("No Backend Url Found, please contact maintainer");
     }
 
-    injectAssets(version);
+    injectAssets(tempVersion);
 }
 
 async function getLatestReleaseVersion() {

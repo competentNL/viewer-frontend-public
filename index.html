@@ -6,12 +6,7 @@
 </head>
 <body>
     <app-viewer-root></app-viewer-root>
-    <script>
-        window.viewer = {
-            version: '0.0.0',
-            backendUrl: 'http://localhost:8080',
-        }
-    </script>
-    <script src="https://competentnl.github.io/viewer-frontend-public/viewer-initializer.js"></script>
+
+    <script src="viewer-initializer.js?version=<version>&backend_url=<backend_url>"></script>
 </body>
 </html>

@@ -9,14 +9,7 @@ To Embed the viewer inside your website you need to use the following example.
 ```html
 <app-viewer-root></app-viewer-root>
 
-<script>
-    window.viewer = {
-        version: '<VERSION>',
-        backendUrl: '<YOUR_BACKEND_URL>'
-    }
-</script>
-
-<script src="https://competentnl.github.io/viewer-frontend-public/viewer-initializer.js"></script>
+<script src="viewer-initializer.js?version=<version>&backend_url=<backend_url>"></script>
 ```
 
 ## Viewer initializer 
@@ -24,10 +17,10 @@ The viewer-initializer.js script contains all the logic required to render the v
 
 ## Config
 
-| Key     | Value                                                                                                                         |
-|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| version | Specify a release version manually, or omit this key to automatically fetch the latest version via the GitHub API. |
-|backendUrl| URL of the backend API that the viewer will communicate with.                                                                 |
+| Key     | Value                                                                                                                         | Example                 |
+|---------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| version | Specify a release version manually, or omit this key to automatically fetch the latest version via the GitHub API. | 0.0.0                   
+|backendUrl| URL of the backend API that the viewer will communicate with.                                                                 | https://example.com/api |
 
 ## Notes
 Make sure the window.viewer object is defined before loading the initializer script.
