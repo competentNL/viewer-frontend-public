@@ -3,6 +3,10 @@ const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
 const backendUrl = document.currentScript.getAttribute('backend-url');
 let version = document.currentScript.getAttribute('version');
 
+const currentScript = document.currentScript;
+const args = Object.fromEntries(new URL(document.currentScript.src).searchParams);
+console.log(currentScript, args);
+
 async function init() {
     if (!version) {
         version = await getLatestReleaseVersion();
