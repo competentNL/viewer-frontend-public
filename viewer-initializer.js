@@ -1,4 +1,4 @@
-const url = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
+const viewerUrl = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
 const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
 const {version, backend_url} = Object.fromEntries(new URL(document.currentScript.src).searchParams);
 
@@ -26,7 +26,7 @@ async function init() {
 
 async function getLatestReleaseVersion() {
     try {
-        const response = await fetch(url);
+        const response = await fetch(viewerUrl);
         if (!response.ok) {
             throw new Error(`GitHub API error: ${response.status}`);
         }
