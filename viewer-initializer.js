@@ -5,6 +5,7 @@
 
     // Prevent duplicate initialization
     if (window.viewerInitialized) {
+        window.location.reload();
         return;
     }
 
