@@ -1,65 +1,90 @@
-const viewerUrl = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
-const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
-const {version, backend_url} = Object.fromEntries(new URL(document.currentScript.src).searchParams);
+(function () {
+    const viewerUrl = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
+    const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
+    const { version, backend_url } = Object.fromEntries(new URL(document.currentScript.src).searchParams);
 
-window.viewer = {
-    version,
-    backendUrl: backend_url
-}
-
-async function init() {
-    let tempVersion = version;
-    if (!tempVersion) {
-        tempVersion = await getLatestReleaseVersion();
-    }
-
-    if (!tempVersion) {
-        throw new Error("No Version Found, please contact maintainer");
+    // Prevent duplicate initialization
+    if (window.viewerInitialized) {
+        return;
     }
 
     if (!backend_url) {
-        throw new Error("No Backend Url Found, please contact maintainer");
+        return;
     }
 
-    injectAssets(tempVersion);
-}
+    window.viewerInitialized = true;
 
-async function getLatestReleaseVersion() {
-    try {
-        const response = await fetch(viewerUrl);
-        if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
+    window.viewer = {
+        version,
+        backendUrl: backend_url
+    };
+
+    init().catch((err) => {
+        console.error(err);
+    });
+
+    async function init() {
+        let tempVersion = version;
+        if (!tempVersion) {
+            tempVersion = await getLatestReleaseVersion();
         }
 
-        const data = await response.json();
-        return data.tag_name || "No release tag found";
-    } catch (error) {
-        console.error("Error fetching latest release:", error);
-        return null;
+        if (!tempVersion) {
+            throw new Error("No Version Found, please contact maintainer");
+        }
+
+        if (!backend_url) {
+            throw new Error("No Backend Url Found, please contact maintainer");
+        }
+
+        injectAssets(tempVersion);
     }
-}
 
-function injectAssets(version) {
-    // Inject CSS
-    const cssLink = document.createElement('link');
-    cssLink.rel = 'stylesheet';
-    cssLink.href = `${baseUrl}/${version}/styles.css`;
-    document.head.appendChild(cssLink);
+    async function getLatestReleaseVersion() {
+        try {
+            const response = await fetch(viewerUrl);
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.status}`);
+            }
 
-    const jsPolyScript = document.createElement('script');
-    jsPolyScript.src = `${baseUrl}/${version}/polyfills.js`;
-    jsPolyScript.defer = true;
-    jsPolyScript.type = 'module';
-    document.body.appendChild(jsPolyScript);
+            const data = await response.json();
+            return data.tag_name || "No release tag found";
+        } catch (error) {
+            console.error("Error fetching latest release:", error);
+            return null;
+        }
+    }
 
-    // Inject JS
-    const jsScript = document.createElement('script');
-    jsScript.src = `${baseUrl}/${version}/main.js`;
-    jsScript.defer = true;
-    jsScript.type = 'module';
-    document.body.appendChild(jsScript);
-}
+    function injectAssets(version) {
+        const assetIdPrefix = `viewer-${version}`;
 
-init().catch((err) => {
-    console.error(err);
-});
+        // Inject CSS if not already present
+        if (!document.getElementById(`${assetIdPrefix}-css`)) {
+            const cssLink = document.createElement('link');
+            cssLink.id = `${assetIdPrefix}-css`;
+            cssLink.rel = 'stylesheet';
+            cssLink.href = `${baseUrl}/${version}/styles.css`;
+            document.head.appendChild(cssLink);
+        }
+
+        // Inject polyfills.js if not already present
+        if (!document.getElementById(`${assetIdPrefix}-polyfills`)) {
+            const jsPolyScript = document.createElement('script');
+            jsPolyScript.id = `${assetIdPrefix}-polyfills`;
+            jsPolyScript.src = `${baseUrl}/${version}/polyfills.js`;
+            jsPolyScript.defer = true;
+            jsPolyScript.type = 'module';
+            document.body.appendChild(jsPolyScript);
+        }
+
+        // Inject main.js if not already present
+        if (!document.getElementById(`${assetIdPrefix}-main`)) {
+            const jsScript = document.createElement('script');
+            jsScript.id = `${assetIdPrefix}-main`;
+            jsScript.src = `${baseUrl}/${version}/main.js`;
+            jsScript.defer = true;
+            jsScript.type = 'module';
+            document.body.appendChild(jsScript);
+        }
+    }
+})();
