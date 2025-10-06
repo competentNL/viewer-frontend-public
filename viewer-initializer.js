@@ -8,6 +8,10 @@
         return;
     }
 
+    if (!backend_url) {
+        return;
+    }
+
     window.viewerInitialized = true;
 
     window.viewer = {
