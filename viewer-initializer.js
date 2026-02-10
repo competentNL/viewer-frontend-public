@@ -3,8 +3,11 @@
     const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
     const { version, backend_url } = Object.fromEntries(new URL(document.currentScript.src).searchParams);
 
-    // Prevent duplicate initialization
-    if (window.viewerInitialized) {
+    // Check if we're on an edit page (should be ignored for duplicate initialization check)
+    const isEditPage = /\/page\/edit\//.test(window.location.pathname);
+
+    // Prevent duplicate initialization (except on edit pages)
+    if (window.viewerInitialized && !isEditPage) {
         window.location.reload();
         return;
     }
