@@ -7,10 +7,10 @@
     const isEditPage = /\/page\/edit\//.test(window.location.pathname);
 
     // Prevent duplicate initialization (except on edit pages)
-    if (window.viewerInitialized && !isEditPage) {
-        window.location.reload();
-        return;
-    }
+    // if (window.viewerInitialized && !isEditPage) {
+    //     window.location.reload();
+    //     return;
+    // }
 
     if (!backend_url) {
         return;
