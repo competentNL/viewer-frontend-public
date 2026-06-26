@@ -1,74 +1,46 @@
 (function () {
-    const viewerUrl = 'https://api.github.com/repos/competentNL/viewer-frontend-public/releases/latest';
+    const baseVersion = '1.3.1';
+    //const baseUrl = 'https://compententnl-viewer-37a748.gitlab.io/releases';
     const baseUrl = 'https://competentnl.github.io/viewer-frontend-public/releases';
     const { version, backend_url } = Object.fromEntries(new URL(document.currentScript.src).searchParams);
 
     // Check if we're on an edit page (should be ignored for duplicate initialization check)
     const isEditPage = /\/page\/edit\//.test(window.location.pathname);
-    console.log(backend_url);
-    console.log("viewer acc script");
-    // Prevent duplicate initialization (except on edit pages)
-    if (window.viewerInitializedAcc && !isEditPage) {
-        window.location.reload();
+
+    // // Prevent duplicate initialization (except on edit pages)
+    if (window.viewerInitialized && !isEditPage) {
+        console.warn("Viewer loader: Duplicate initialization prevented.");
         return;
     }
 
     if (!backend_url) {
+        console.error("Viewer loader: No Backend Url Found, please contact maintainer");
         return;
     }
 
-    window.viewerInitializedAcc = true;
+    window.viewerInitialized = true;
 
     window.viewer = {
-        version,
+        version: version || baseVersion,
         backendUrl: backend_url
     };
 
-    init().catch((err) => {
-        console.error(err);
-    });
-
-    async function init() {
-        let tempVersion = version;
-        if (!tempVersion) {
-            tempVersion = await getLatestReleaseVersion();
-        }
-
-        if (!tempVersion) {
-            throw new Error("No Version Found, please contact maintainer");
-        }
-
-        if (!backend_url) {
-            throw new Error("No Backend Url Found, please contact maintainer");
-        }
-
-        injectAssets(tempVersion);
+    // Execute asset injection
+    try {
+        injectAssets(window.viewer.version);
+    } catch (err) {
+        console.error("Viewer loader failed:", err);
     }
 
-    async function getLatestReleaseVersion() {
-        try {
-            const response = await fetch(viewerUrl);
-            if (!response.ok) {
-                throw new Error(`GitHub API error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.tag_name || "No release tag found";
-        } catch (error) {
-            console.error("Error fetching latest release:", error);
-            return null;
-        }
-    }
-
-    function injectAssets(version) {
-        const assetIdPrefix = `viewer-${version}`;
+    function injectAssets(resolvedVersion) {
+        const assetIdPrefix = `viewer-${resolvedVersion}`;
 
         // Inject CSS if not already present
         if (!document.getElementById(`${assetIdPrefix}-css`)) {
             const cssLink = document.createElement('link');
             cssLink.id = `${assetIdPrefix}-css`;
             cssLink.rel = 'stylesheet';
-            cssLink.href = `${baseUrl}/${version}/styles.css`;
+            cssLink.href = `${baseUrl}/${resolvedVersion}/styles.css`;
             document.head.appendChild(cssLink);
         }
 
@@ -76,7 +48,7 @@
         if (!document.getElementById(`${assetIdPrefix}-polyfills`)) {
             const jsPolyScript = document.createElement('script');
             jsPolyScript.id = `${assetIdPrefix}-polyfills`;
-            jsPolyScript.src = `${baseUrl}/${version}/polyfills.js`;
+            jsPolyScript.src = `${baseUrl}/${resolvedVersion}/polyfills.js`;
             jsPolyScript.defer = true;
             jsPolyScript.type = 'module';
             document.body.appendChild(jsPolyScript);
@@ -86,7 +58,7 @@
         if (!document.getElementById(`${assetIdPrefix}-main`)) {
             const jsScript = document.createElement('script');
             jsScript.id = `${assetIdPrefix}-main`;
-            jsScript.src = `${baseUrl}/${version}/main.js`;
+            jsScript.src = `${baseUrl}/${resolvedVersion}/main.js`;
             jsScript.defer = true;
             jsScript.type = 'module';
             document.body.appendChild(jsScript);
