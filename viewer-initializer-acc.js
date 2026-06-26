@@ -10,6 +10,7 @@
     // // Prevent duplicate initialization (except on edit pages)
     if (window.viewerInitialized && !isEditPage) {
         console.warn("Viewer loader: Duplicate initialization prevented.");
+        window.location.reload();
         return;
     }
 
