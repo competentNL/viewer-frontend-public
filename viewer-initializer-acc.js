@@ -5,12 +5,13 @@
 
     // Check if we're on an edit page (should be ignored for duplicate initialization check)
     const isEditPage = /\/page\/edit\//.test(window.location.pathname);
-
+    console.log(backend_url);
+    console.log("viewer acc script");
     // Prevent duplicate initialization (except on edit pages)
-    // if (window.viewerInitialized && !isEditPage) {
-    //     window.location.reload();
-    //     return;
-    // }
+    if (window.viewerInitialized && !isEditPage) {
+        window.location.reload();
+        return;
+    }
 
     if (!backend_url) {
         return;
