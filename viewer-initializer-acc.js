@@ -8,7 +8,7 @@
     console.log(backend_url);
     console.log("viewer acc script");
     // Prevent duplicate initialization (except on edit pages)
-    if (window.viewerInitialized && !isEditPage) {
+    if (window.viewerInitializedAcc && !isEditPage) {
         window.location.reload();
         return;
     }
@@ -17,7 +17,7 @@
         return;
     }
 
-    window.viewerInitialized = true;
+    window.viewerInitializedAcc = true;
 
     window.viewer = {
         version,
